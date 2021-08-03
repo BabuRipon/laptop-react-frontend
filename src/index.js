@@ -1,17 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {App} from './App';
+import {BrowserRouter,Routes, Route, useLocation}from 'react-router-dom';
+import 'antd/dist/antd.css';
+import {combineReducers, createStore}from 'redux';
+import {Provider,}from 'react-redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import reducer from './redux/reducer';
+import SearchReducer from './redux/searchReducer';
+import CartReducer from './redux/cartReducer';
+import DrawerReducer from './redux/drawerReducer';
+
+import { useEffect } from 'react';
+
+
+
+const ScrollToTop=()=>{
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0,0);
+    }, [pathname]);
+
+    return null;
+}
+
+
+const root=combineReducers({
+  user:reducer,
+  search:SearchReducer,
+  cart:CartReducer,
+  drawer:DrawerReducer,
+})
+
+const store=createStore(root,composeWithDevTools());
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+      <BrowserRouter>
+      <ScrollToTop />
+        <App />
+      </BrowserRouter>
+  </Provider>
+  
+  ,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
